@@ -42,7 +42,17 @@ INSTALLED_APPS = [
 
     'phonenumber_field', # Field to save phone number from user
     'auth_system_api',
+    'rest_framework',
+    'multiselectfield',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES' : (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,6 +63,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_COOKIE_AGE = 604800
 
 ROOT_URLCONF = 'source_of_truth.urls'
 
