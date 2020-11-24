@@ -1,19 +1,20 @@
 import random
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 
 from progress.bar import Bar
 
+
 class Command(BaseCommand):
     help = 'Fill django_db database with User info'
     USER_COUNT = 1000
-    
+
     def _get_phone(self):
         COUNT_NUMBER = 7
         phone = '+37529'
         for _ in range(COUNT_NUMBER):
-            phone = "".join([phone, str(random.randint(0,9))])
+            phone = "".join([phone, str(random.randint(0, 9))])
         return phone
 
     def add_arguments(self, parser):
@@ -23,8 +24,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         User = get_user_model()
         bar = Bar('Create user', max=self.USER_COUNT)
-        with open(options['first_name'], 'r') as first_name_file, \
-            open(options['last_name'], 'r') as last_name_file:
+        with open(options['first_name'], 'r') as first_name_file, open(options['last_name'], 'r') as last_name_file:
 
             first_name = None
             last_name = None

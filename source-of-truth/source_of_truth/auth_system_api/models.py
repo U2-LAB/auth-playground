@@ -14,11 +14,11 @@ class User(AbstractUser):
     SKYPE = 5
 
     PERM_CHOICES = (
-        (EMAIL, 'Email'), 
-        (USERNAME, 'Username'), 
-        (FIRST_NAME, 'FirstName'), 
-        (LAST_NAME, 'LastName'), 
-        (PHONE, 'Phone'), 
+        (EMAIL, 'Email'),
+        (USERNAME, 'Username'),
+        (FIRST_NAME, 'FirstName'),
+        (LAST_NAME, 'LastName'),
+        (PHONE, 'Phone'),
         (SKYPE, 'Skype'),
     )
 

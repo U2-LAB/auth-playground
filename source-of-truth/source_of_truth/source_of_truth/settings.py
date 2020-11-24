@@ -40,14 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'phonenumber_field', # Field to save phone number from user
+    'phonenumber_field',  # Field to save phone number from user
     'auth_system_api',
     'rest_framework',
     'multiselectfield',
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES' : (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
     )
