@@ -47,11 +47,13 @@ def Auth(request):
     else:
         return Response(
             {
-                "SessionId": '',
+                "SessionId": 0,
                 "ErrorCode": 'Incorrect user name or password',
                 "Permission": 'READ',
             }
         )
+
+FIELDS = ['Email', 'Username', 'FirstName', 'LastName', 'Phone', 'Skype']
 
 @csrf_exempt
 @api_view(['POST'])
@@ -62,18 +64,18 @@ def Permission(request):
                 "ErrorCode": "You are not authorized",
             }
         )
-    fields = ['Email', 'Username', 'FirstName', 'LastName', 'Phone', 'Skype']
+    
     url = parse_qs(urlparse(request.build_absolute_uri()).query) # parse QueryString from url
     try:
-        user_id = int(url['user_id'][0])
+        userid = int(url['userid'][0])
     except KeyError:
         return Response(
             {
-                "ErrorCode": "KeyError querystring must be contain `user_id`",
+                "ErrorCode": "KeyError querystring must be contain `userid`",
             }
         )
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(id=userid)
     except User.DoesNotExist:
         return Response(
             {
@@ -82,7 +84,7 @@ def Permission(request):
         )
     try:
         allowed_fields = {}
-        for field in fields:
+        for field in FIELDS:
             try:
                 allowed_fields[field] = True if request.data[field]=='True' else False
             except KeyError:
@@ -101,3 +103,31 @@ def Permission(request):
             "ErrorCode": 'Error in Key name. Must be `permission` and `fields`',
         }
     ) 
+
+@api_view(['GET'])
+def GetPerson(request):
+    ErrorCode = ''
+    Permission = 'READ'
+    Profile = {}
+    if not request.session.is_empty():
+        url = parse_qs(urlparse(request.build_absolute_uri()).query) # parse QueryString from url
+        try:
+            personId = int(url['personId'][0])
+        except KeyError:
+            ErrorCode = "KeyError querystring must be contain `personId`",
+        else:
+            try:
+                user = User.objects.get(id=personId)
+            except User.DoesNotExist:
+                ErrorCode = "User does not exist"
+            else:
+                Profile = {field : user.__getattribute__(field.lower()) for field in FIELDS if field in user.get_allow_fields_list()}
+    else:
+        ErrorCode = "Session expired"
+    return Response(
+        {
+            "ErrorCode" : ErrorCode,
+            "Permission" : Permission,
+            "Profile": Profile,
+        }
+    )
