@@ -3,9 +3,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.models import AnonymousUser
+from django.views.decorators.csrf import csrf_exempt
 
 from urllib.parse import urlparse, parse_qs
 
@@ -50,8 +53,16 @@ def Auth(request):
             }
         )
 
+@csrf_exempt
 @api_view(['POST'])
 def Permission(request):
+    if request.session.is_empty():
+        return Response(
+            {
+                "ErrorCode": "You are not authorized",
+            }
+        )
+    fields = ['Email', 'Username', 'FirstName', 'LastName', 'Phone', 'Skype']
     url = parse_qs(urlparse(request.build_absolute_uri()).query) # parse QueryString from url
     try:
         user_id = int(url['user_id'][0])
@@ -69,25 +80,24 @@ def Permission(request):
                 "ErrorCode": "User does not exist",
             }
         )
-    if user:
-        try:
-            allowed_fields = request.data['fields'].split(' ')
-            user.allow_fields = allowed_fields
-            user.save()
-            return Response(
-                {
-                    "Success": 'Fields was changed',
-                }
-            )
-        except (MultiValueDictKeyError, KeyError) as e:
-           return Response(
-            {
-                "ErrorCode": 'Error in Key name. Must be `permission` and `fields`',
-            }
-        ) 
-    else:
+    try:
+        allowed_fields = {}
+        for field in fields:
+            try:
+                allowed_fields[field] = True if request.data[field]=='True' else False
+            except KeyError:
+                allowed_fields[field] = False
+        
+        user.allow_fields = [index for index, value in enumerate(allowed_fields.values()) if value]
+        user.save()
         return Response(
             {
-                "ErrorCode": "You are not logged in",
+                "Success": 'Fields was changed',
             }
         )
+    except (MultiValueDictKeyError, KeyError) as e:
+        return Response(
+        {
+            "ErrorCode": 'Error in Key name. Must be `permission` and `fields`',
+        }
+    ) 
