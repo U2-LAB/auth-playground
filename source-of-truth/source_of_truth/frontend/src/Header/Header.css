@@ -1,0 +1,45 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+#header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    background-color: red;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 30px;
+
+    -webkit-box-shadow: 0px 5px 5px -5px rgba(34, 60, 80, 0.6);
+    -moz-box-shadow: 0px 5px 5px -5px rgba(34, 60, 80, 0.6);
+    box-shadow: 0px 5px 5px -5px rgba(34, 60, 80, 0.6);
+}
+
+#logotype {
+    color: white;
+    white-space: nowrap;
+    -webkit-text-stroke:.7px black;
+}
+
+#logout_btn {
+    width: 100px;
+    height: 30px;
+    background-color: grey;
+    border: none;
+    color: white;
+    transition: .2s;
+}
+
+#logout_btn:hover {
+    background-color: white;
+    color: grey;
+    cursor: pointer;
+    clip-path: polygon(5% 0, 40% 0%, 100% 0, 100% 85%, 95% 100%, 0 100%, 0% 70%, 0 14%);
+}

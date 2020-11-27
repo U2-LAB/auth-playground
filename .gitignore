@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/django,python,vscode
-# Edit at https://www.toptal.com/developers/gitignore?templates=django,python,vscode
+# Created by https://www.toptal.com/developers/gitignore/api/django,react,python,vscode,flask
+# Edit at https://www.toptal.com/developers/gitignore?templates=django,react,python,vscode,flask
 
 ### Django ###
 *.log
@@ -150,6 +150,71 @@ dmypy.json
 # profiling data
 .prof
 
+### Flask ###
+instance/*
+!instance/.gitignore
+
+### Flask.Python Stack ###
+# Byte-compiled / optimized / DLL files
+
+# C extensions
+
+# Distribution / packaging
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+
+# Installer logs
+
+# Unit test / coverage reports
+
+# Translations
+
+# Django stuff:
+
+# Flask stuff:
+
+# Scrapy stuff:
+
+# Sphinx documentation
+
+# PyBuilder
+
+# Jupyter Notebook
+
+# IPython
+
+# pyenv
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+
+# Celery stuff
+
+# SageMath parsed files
+
+# Environments
+
+# Spyder project settings
+
+# Rope project settings
+
+# mkdocs documentation
+
+# mypy
+
+# Pyre type checker
+
+# pytype static type analyzer
+
+# profiling data
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 
@@ -211,6 +276,21 @@ dmypy.json
 
 # profiling data
 
+### react ###
+.DS_*
+logs
+**/*.backup.*
+**/*.back.*
+
+node_modules
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch
+
 ### vscode ###
 .vscode/*
 .vscode/
@@ -220,5 +300,6 @@ dmypy.json
 !.vscode/extensions.json
 *.code-workspace
 
-# End of https://www.toptal.com/developers/gitignore/api/django,python,vscode
+# End of https://www.toptal.com/developers/gitignore/api/django,react,python,vscode,flask
+
 

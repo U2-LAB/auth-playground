@@ -1,0 +1,75 @@
+.App {
+    text-align: center;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+form {
+    border-radius: 4px;
+    padding: 20px 10px 20px 30px;
+    width: 20%;
+    min-width: 250px;
+    margin: 12.5% auto;
+    box-shadow:1px 1px 20px 2px rgba(0,0,0,0.5);
+    -webkit-box-shadow:1px 1px 20px 2px rgba(0,0,0,0.5);
+    -moz-box-shadow:1px 1px 20px 2px rgba(0,0,0,0.5); 
+}
+
+.field {
+    margin: 30px 12.5% 10px 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+input[type='text'],
+input[type='password'],
+input:focus {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid red;
+    outline: none;
+}
+
+label {
+    position: absolute;
+    left: 0;
+    top: -10px;
+    color: grey;
+    transition: .2s;
+    cursor: text;
+}
+
+input:focus + label {
+    font-size: 10px;
+    top: -15px
+}
+
+input:valid + label {
+    font-size: 10px;
+    top: -15px
+}
+
+input:invalid {
+    box-shadow: none;
+}
+
+input[type="submit"] {
+    width: 50%;
+    border: .2px solid red;
+    background-color: white;
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+input[type="submit"]:hover,
+input[type="submit"]:focus {
+    background-color: red;
+    color: white;
+}
