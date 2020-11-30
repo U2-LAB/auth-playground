@@ -184,6 +184,3 @@ def GetAllPerson(request):
 def logout_user(request):
     logout(request)
     return Response()
-
-def index(request):
-    return render(request, 'index.html')
