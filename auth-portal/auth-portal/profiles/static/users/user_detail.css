@@ -1,0 +1,48 @@
+.block {
+    background-color: green;
+}
+
+.block h3 {
+    font-weight: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 10px 20px;
+}
+
+
+.chat-message {
+    margin: 7px 0px !important;
+    background-color: rgb(209, 227, 230);
+}
+
+.message .message-text {
+    right: 19%;
+    position: absolute;
+}
+
+.message .label {
+    margin-left: auto;
+    align-self: flex-end;
+    text-align: right;
+}
+.detail {
+    padding: 0px 10px 10px 10px;
+    margin: 0px 0px 0px 0px;
+    background-color: rgb(209, 227, 230);
+    width: 40vw !important;
+}
+
+.modal-small {
+    width: 30vw !important;
+}
+
+.application-modal {
+    cursor: pointer;
+}
