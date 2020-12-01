@@ -11,7 +11,7 @@
 {% if user.is_authenticated %}
     <header id="header">
         <div id="logo-box">
-        <h1 id="logotype">{{user.username}}</h1>
+        <h1 id="logotype">Source of truth</h1>
         </div>
         <div id="logout-box">
             <input type="button" value="Logout" onclick="fetch('/logout').then(() => document.location.href='/home')" id="logout_btn"/>
