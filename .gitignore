@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ### Django ###
 *.log
 *.pot
@@ -16,6 +17,22 @@ media
 
 # C extensions
 *.so
+=======
+
+# Created by https://www.toptal.com/developers/gitignore/api/python,vscode
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,vscode
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# json and csv files
+*.csv
+*.json
+>>>>>>> Added .gitignore
 
 # Distribution / packaging
 .Python
@@ -36,13 +53,26 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+<<<<<<< HEAD
 MANIFEST
 
+=======
+.idea/
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+>>>>>>> Added .gitignore
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
 
 
+<<<<<<< HEAD
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
 
@@ -50,6 +80,18 @@ __pypackages__/
 celerybeat-schedule
 celerybeat.pid
 
+=======
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+__pypackages__/
+
+>>>>>>> Added .gitignore
 
 # Environments
 .env
@@ -61,6 +103,7 @@ env.bak/
 venv.bak/
 pythonenv*
 
+<<<<<<< HEAD
 
 # mkdocs documentation
 /site
@@ -76,3 +119,5 @@ pythonenv*
 .flake8
 *.txt
 !requirements.txt
+=======
+>>>>>>> Added .gitignore
