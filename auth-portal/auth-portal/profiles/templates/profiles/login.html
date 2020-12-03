@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block secondary_css %}
+    <link rel="stylesheet" href="{% static "profiles/login.css" %}">
+{% endblock %}
+
+{% block title %} Login {% endblock %}
+
+{% block content %}
+
+<div class="button-box">
+    <a href="#" class="btn btn-white">Login</a>
+</div>
+
+    <p>Hello {{ request.user }}</p>
+
+<div class="ui modal container modal-small" id="modal-window">
+    <i class="close icon"></i>
+    <div class="header">LogIn</div>
+    <form class="ui form content"  method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="field required">
+            <label>Login</label>
+            <input type="text" name="username" placeholder="Enter login" />
+        </div>
+        <div class="field required">
+            <label>Password</label>
+            <input type="password" tabindex="0" placeholder="Enter Password" name="password" />
+        </div>
+        <div class="field">
+            <button class="ui button fluid" type="submit">LogIn</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('.button-box').on('click', (e) => {
+        $(`#modal-window`).modal('show')
+    })
+</script>
+{% endblock %}
