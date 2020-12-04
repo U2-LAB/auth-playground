@@ -4,7 +4,7 @@ from .views import login_user, get_access_token, UserDetailView, redirect_to_oau
 
 urlpatterns = [
     path('login/', login_user, name="login"),
-    path('noexist/callback/', get_access_token, name='token'),
+    path('api/v1/noexist/callback/', get_access_token, name='token'),
     path("user/", login_required(UserDetailView.as_view()), name='user_detail'),
     path("authorize/<slug:client_id>", redirect_to_oauth_form, name="oauth_authorize"),
     path("oauth/applications/register/", MyAppReg.as_view()),

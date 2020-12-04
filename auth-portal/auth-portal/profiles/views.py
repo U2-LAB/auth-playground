@@ -3,15 +3,19 @@ from django.forms import modelform_factory
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.detail import DetailView
 from oauth2_provider.models import get_application_model
+from oauth2_provider.views.application import ApplicationRegistration, ApplicationUpdate
+
+from api.services import DataService
 
 from .forms import UserForm
 from .models import User
-from .services import request_to_get_access_token, revoke_token, get_user_data, get_redirect_url, \
-    authorize_user_by_request
-from django.views.decorators.csrf import ensure_csrf_cookie
-from oauth2_provider.views.application import ApplicationRegistration, ApplicationUpdate
+from .services import OauthServices
+
+oauth_service = OauthServices()
+data_service = DataService()
 
 
 class UserDetailView(DetailView):
@@ -26,12 +30,12 @@ class UserDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         user_object = self.get_object()
         context["apps"] = [token.application for token in user_object.oauth2_provider_accesstoken.all()]
-        context["user_data"] = get_user_data(self.request)["Profile"]
+        context["user_data"] = data_service.get_user_data(self.request)["Profile"]
         return context
 
     @method_decorator(ensure_csrf_cookie)
     def post(self, request, **kwargs):
-        revoke_token(request)
+        oauth_service.revoke_token(request)
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
@@ -46,7 +50,7 @@ def login_user(request):
     elif request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
-            response = authorize_user_by_request(request).json()
+            response = data_service.authorize_user_by_request(request).json()
             user_credentials = {
                 "username": request.POST['username'],
                 "password": request.POST['password']
@@ -75,13 +79,14 @@ def login_user(request):
 
 
 def get_access_token(request):
+    # TODO Move in API
     """Returns the response with access token"""
-    response = request_to_get_access_token(request)
+    response = oauth_service.request_to_get_access_token(request)
     return JsonResponse(response.json())
 
 
 def redirect_to_oauth_form(request, client_id):
-    url = get_redirect_url(request, client_id)
+    url = oauth_service.get_redirect_url(request, client_id)
     return HttpResponseRedirect(url)
 
 
@@ -116,8 +121,6 @@ class MyAppUpdate(ApplicationUpdate):
             )
         )
 
-
-
 # The protected user profile endpoint that will be called
 # upon successful sign-in to populate the client app database
 #
@@ -130,7 +133,6 @@ class MyAppUpdate(ApplicationUpdate):
 #         "first_name": request.resource_owner.first_name,
 #         "last_name": request.resource_owner.last_name
 #     }), content_type="application/json")
-
 
 
 # http://127.0.0.1:8000/o/revoke_token/ revoking token
