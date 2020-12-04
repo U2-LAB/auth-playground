@@ -41,7 +41,15 @@ class Command(BaseCommand):
                 skype = ".".join([first_name, last_name])
                 password = first_name
                 try:
-                    new_user = User.objects.create_user(username=first_name, password=password, email=email, phone=phone, skype=skype, first_name=first_name, last_name=last_name)
+                    new_user = User.objects.create_user(
+                        username=first_name, 
+                        password=password, 
+                        email=email, 
+                        phone=phone, 
+                        skype=skype, 
+                        first_name=first_name, 
+                        last_name=last_name,
+                    )
                     new_user.save()
                 except ValueError:
                     print('Duplicate username')
