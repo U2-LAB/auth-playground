@@ -31,7 +31,7 @@ class UserDetailView(DetailView):
 
     @method_decorator(ensure_csrf_cookie)
     def post(self, request, **kwargs):
-        revoke_token(request, request.POST["app_pk"])
+        revoke_token(request)
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
@@ -54,7 +54,7 @@ def login_user(request):
 
             if not response["ErrorCode"]:
                 request.session["sessionAPI"] = response["SessionId"]
-                request.session["expire_date"] = response["ExpireDate"]
+                request.session["expire_date_API"] = response["ExpireDate"]
                 user = authenticate(request, **user_credentials)
 
                 if not user:

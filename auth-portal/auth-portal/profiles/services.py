@@ -8,20 +8,21 @@ from rest_framework import status
 
 from .models import MyApplication
 
-_BASE_API_PATH = 'http://127.0.0.1:8000/oauth'
+_BASE_API_PATH = 'http://192.168.32.95:8000/oauth'
 
 
-def revoke_token(request, app_id):
+def revoke_token(request):
+    app_id = request.POST["app_pk"]
     application_object = MyApplication.objects.get(pk=app_id)
 
     url = f"{_BASE_API_PATH}/revoke_token/"
+    access_token = request.user.oauth2_provider_accesstoken.get(application_id=app_id).token
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
     }
-    access_token = request.user.oauth2_provider_accesstoken.get(application_id=app_id).token
     data = {
         "client_id": application_object.client_id,
-        "client_secret": application_object.client_secret(application_object),
+        "client_secret": application_object.client_secret,
         "token": access_token
     }
     response = requests.post(url, headers=headers, data=data)
@@ -113,6 +114,7 @@ def get_redirect_url(request, client_id):
     except MyApplication.DoesNotExist:
         return reverse("login")
     scopes = ' '.join(app_obj.scope.choices[elem] for elem in app_obj.scope)
+
     url_args = {
         "response_type": "code",
         "client_id": client_id,
@@ -126,23 +128,30 @@ def authorize_user_by_request(request):
     """Make request to get session from server service/"""
     url = "http://192.168.32.89:8000/Auth"
 
-    # credentials = {
-    #     'username': request.POST["username"],
-    #     'password': request.POST["password"]
-    # }
-
     credentials = {
-        'username': 'nikita',
-        'password': 'nikita'
+        'username': request.POST["username"],
+        'password': request.POST["password"]
     }
 
-    s = requests.Session()
-    s.post(url, data=credentials)
-    return s
+    # credentials = {
+    #     'username': "admin",
+    #     'password': "admin"
+    # }
+    session = requests.Session()
+    response_with_session = session.post(url, data=credentials)
+    return response_with_session
 
 
 def get_user_data(request):
-    s = authorize_user_by_request(request)
+    # if not request.session.get("sessionAPI"):
+    #     session = authorize_user_by_request(request)
+
+    cookies = {**request.COOKIES, "sessionid": request.session.get("sessionAPI")}
+
+    s = requests.Session()
     url = "http://192.168.32.89:8000/GetPerson"
-    response = s.get(url)
+
+    req = requests.Request("GET", url, cookies=cookies)
+    req = s.prepare_request(req)
+    response = s.send(req)
     return response.json()

@@ -15,10 +15,10 @@ class CheckSessionMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        exp = request.session.get("expire_date")
+        exp = request.session.get("expire_date_API")
 
         if exp:
-            expire_date = datetime.datetime.strptime(request.session.get("expire_date"), "%Y-%m-%dT%H:%M:%S.%f")
+            expire_date = datetime.datetime.strptime(exp, "%Y-%m-%dT%H:%M:%S.%f")
             current_time = datetime.datetime.now()
             if expire_date - current_time < datetime.timedelta():
                 logout(request)
