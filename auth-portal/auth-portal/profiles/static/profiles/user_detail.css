@@ -4,18 +4,19 @@
     box-sizing: border-box;
 }
 
-.block {
-    background-color: green;
-}
-
-.block h3 {
-    font-weight: normal;
-}
 
 body {
+    font-family: "Lato", sans-serif !important;
+    font-weight: 400;
+    font-size: 110%;
     padding: 10px 20px;
+    background-color: #bbd8ff;
 }
 
+.header {
+    font-size: 1.4rem !important;
+    text-align: center;
+}
 
 .chat-message {
     margin: 7px 0px !important;
@@ -23,20 +24,28 @@ body {
 }
 
 .message .message-text {
-    right: 19%;
     position: absolute;
+    right: 6%;
+    font-size: 1.6rem !important;
 }
 
 .message .label {
     margin-left: auto;
     align-self: flex-end;
     text-align: right;
+    font-size: 1.6rem;
 }
+
 .detail {
     padding: 0px 10px 10px 10px;
     margin: 0px 0px 0px 0px;
     background-color: rgb(209, 227, 230);
-    width: 40vw !important;
+    width: 30vw !important;
+    position: relative;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+
 }
 
 .modal-small {
@@ -44,5 +53,10 @@ body {
 }
 
 .application-modal {
+    margin: .3rem 0 !important;
     cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    font-size: 1.3rem !important;
 }

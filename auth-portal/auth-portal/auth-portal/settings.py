@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -176,7 +176,7 @@ OAUTH2_PROVIDER = {
     'SCOPES': {
         'read': 'Read scope',
         'write': 'Write scope',
-        'email': 'Access to your email',
+        'Email': 'Access to your email',
         'Username': 'Access to your Username',
         'First_Name': 'Access to your first name',
         'Last_Name': 'Access to your last name',

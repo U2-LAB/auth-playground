@@ -6,12 +6,14 @@
     <link rel="stylesheet" href="{% static "profiles/user_detail.css" %}">
 {% endblock %}
 
-{% block title %} Vasya {% endblock %}
+{% block title %} {{ request.user }} {% endblock %}
 
 {% block content %}
+
 <div class="detail">
     <div class="header">User data</div>
     {% for key, value in user_data.items %}
+
     <div class="ui icon message chat-message">
         <div class="ui label">{{ key }}</div>
         <div class="message-text">
@@ -22,43 +24,58 @@
             {% endif %}
         </div>
     </div>
+
     {% endfor %}
-</div>
 
-<h2>Applications</h2>
+    {% if apps %}
+    <div class="header">Applications</div>
+    {% endif %}
 
-{% for app in apps %}
-{% get_scope app as scope %}
-<div class="application">
-    <a id="{{ app.name }}" class="application-modal">{{app.name}}<i class="fal fa-plus-circle plus"></i></a>
-    <div class="ui modal container modal-small" id="{{ app.name }}-modal">
-        <i class="close icon"></i>
-        <div class="header">Detail</div>
-        <form class="ui form content" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% for key, value in user_data.items %}
-            {% if key in scope %}
-            <div class="ui icon message chat-message">
-                <div class="ui label">{{ key }}</div>
-                <div class="message-text">
-                    {% if value %}
-                    {{ value }}
-                    {% else %}
-                    -----
-                    {% endif %}
+    {% for app in apps %}
+    {% get_scope app as scope %}
+    
+    <div class="application">
+        <a id="{{ app.name }}" class="application-modal ui label">{{app.name}}</a>
+        <div class="ui modal container modal-small" id="{{ app.name }}-modal">
+            <i class="close icon"></i>
+            <div class="header">Detail</div>
+            <form class="ui form content" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for key, value in user_data.items %}
+                {% if key in scope %}
+                <div class="ui icon message chat-message">
+                    <div class="ui label">{{ key }}</div>
+                    <div class="message-text">
+                        {% if value %}
+                        {{ value }}
+                        {% else %}
+                        -----
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            {% endif %}
-
-            {% endfor %}
-            <div class="field">
-                <input type="hidden" name="app_pk" value="{{ app.pk }}"/>
-                <button class="ui button fluid" type="submit">Revoke</button>
-            </div>
-        </form>
+                {% endif %}
+    
+                {% endfor %}
+                <div class="field">
+                    <input type="hidden" name="app_pk" value="{{ app.pk }}"/>
+                    <button class="ui button fluid" type="submit">Revoke</button>
+                </div>
+            </form>
+        </div>
     </div>
+    {% endfor %}
+    <!-- <div class="ui icon message chat-message">
+        <div class="ui label">{{ key }}</div>
+        <div class="message-text">
+            {% if value %}
+            {{ value }}
+            {% else %}
+            -----
+            {% endif %}
+        </div>
+    </div> -->
 </div>
-{% endfor %}
+
 {% endblock %}
 
 {% block scripts %}
