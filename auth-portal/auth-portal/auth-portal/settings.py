@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'profiles.middleware.CheckSessionMiddleware',
 ]
 
 ROOT_URLCONF = 'auth-portal.urls'
@@ -67,7 +68,9 @@ ROOT_URLCONF = 'auth-portal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [
+            BASE_DIR / 'templates'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Minsk'
 
 USE_I18N = True
 
@@ -143,6 +146,8 @@ STATIC_ROOT = '/static/'
 
 
 #Oauth settings
+
+SESSION_SAVE_EVERY_REQUEST = True
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'profiles.MyApplication'
 AUTH_USER_MODEL = 'profiles.User'

@@ -1,4 +1,4 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.forms import modelform_factory
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -8,7 +8,8 @@ from oauth2_provider.models import get_application_model
 
 from .forms import UserForm
 from .models import User
-from .services import request_to_get_access_token, revoke_token, get_user_data, get_redirect_url
+from .services import request_to_get_access_token, revoke_token, get_user_data, get_redirect_url, \
+    authorize_user_by_request
 from django.views.decorators.csrf import ensure_csrf_cookie
 from oauth2_provider.views.application import ApplicationRegistration, ApplicationUpdate
 
@@ -17,6 +18,9 @@ class UserDetailView(DetailView):
     model = User
     context_object_name = "user"
     template_name = 'profiles/user_detail.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -31,27 +35,47 @@ class UserDetailView(DetailView):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
-def login_temp(request):
+def login_user(request):
+    """Login user by session from service of truth"""
     next_url = request.GET.get('next', '')
 
-    if request.method == "POST":
+    if request.method == "POST" and request.POST.get("logout"):
+        logout(request)
+        form = UserForm()
+
+    elif request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
-            user = authenticate(request, username=request.POST["username"], password=request.POST["password"])
-            if user:
-                login(request, user)
+            response = authorize_user_by_request(request).json()
+            user_credentials = {
+                "username": request.POST['username'],
+                "password": request.POST['password']
+            }
+
+            if not response["ErrorCode"]:
+                request.session["sessionAPI"] = response["SessionId"]
+                request.session["expire_date"] = response["ExpireDate"]
+                user = authenticate(request, **user_credentials)
+
+                if not user:
+                    user = User.objects.create_user(**user_credentials)
+                    user.save()
+
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return HttpResponseRedirect(request.POST['next'])
+
             next_url = request.POST.get('next', '')
     else:
         form = UserForm()
 
     if not next_url:
-        next_url = '/admin/'
+        next_url = '/user/'
 
     return render(request, "profiles/login.html", {'next': next_url, 'form': form})
 
 
 def get_access_token(request):
+    """Returns the response with access token"""
     response = request_to_get_access_token(request)
     return JsonResponse(response.json())
 

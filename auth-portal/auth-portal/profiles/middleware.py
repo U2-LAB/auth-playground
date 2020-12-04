@@ -5,6 +5,11 @@ from django.shortcuts import redirect
 
 
 class CheckSessionMiddleware:
+    """
+    Check session expire date from service of truth
+    if date is expired than logout user and redirect him to login page
+    """
+
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -19,5 +24,3 @@ class CheckSessionMiddleware:
                 logout(request)
                 return redirect("login")
         return response
-
-
