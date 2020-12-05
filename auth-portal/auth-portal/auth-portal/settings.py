@@ -184,4 +184,3 @@ OAUTH2_PROVIDER = {
         'Skype': 'Access to your Skype'
     }
 }
-
