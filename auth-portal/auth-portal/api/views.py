@@ -1,37 +1,30 @@
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
-from oauth2_provider.models import RefreshToken
-from users.models import MyApplication
-from oauth2_provider.views import ProtectedResourceView
+from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from profiles.models import MyApplication
+from profiles.models import User
+from profiles.services import OauthServices
 from .serializers import ApplicationSerializer, UserSerializer
-from users.models import User
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-
-from users.services import request_to_refresh_access_token
-
-
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-
-    def enforce_csrf(self, request):
-        return  # To not perform the csrf check previously happening
+oauth_service = OauthServices()
 
 
 class TokenRefresh(APIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super(TokenRefresh, self).dispatch(request, *args, **kwargs)
+    """
+    API request to refresh token
+    needed data:
+        client_id,
+        refresh_token
+    """
+    authentication_classes = [OAuth2Authentication]
 
     def post(self, request):
-        response = request_to_refresh_access_token(request)
+        response = oauth_service.request_to_refresh_access_token(request)
         return JsonResponse(response["data"], status=response["status_code"])
 
 
@@ -53,16 +46,26 @@ class UserList(generics.ListCreateAPIView):
         return Response(data)
 
 
-class UserDetails(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+class UserDetail(generics.RetrieveAPIView):
+    authentication_classes = [OAuth2Authentication]
+    permission_classes = []
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    def get_object(self):
+        return self.request.auth.user
+
     def get(self, request, *args, **kwargs):
         user_obj = self.get_object()
-        requested_user = request.user
-        if requested_user.is_staff or user_obj == requested_user:
-        # if user_obj == requested_user: # TODO delete after tests
-            return self.retrieve(request, *args, **kwargs)
-        error_message = {"Error": "You don't have enough permissions"}
-        return Response(error_message, status=403)
+        scopes = self.request.auth.scopes
+        data = get_dump_data(request)
+        response_data = {scope: data[scope] for scope in scopes}
+        return JsonResponse(response_data)
+
+
+def get_dump_data(request):
+    return ({
+        "Last_Name": "Kvarn",
+        "skype": "admin@gmail.com",
+        "Phone": "+375441234567"
+    })

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
 from oauth2_provider.models import AccessToken
-from users.models import MyApplication
-from users.models import User
+from profiles.models import MyApplication
+from profiles.models import User
 from rest_framework import serializers
 
 
