@@ -5,10 +5,11 @@ export default class WelcomeJumbatron extends Component {
     handleClick = () => {
         const URL = 'http://localhost:8000/authorize/' + this.props.client_id;
 
-        fetch(URL)
+        fetch(URL, {
+            method: 'GET'
+        })
         .then(resp => {
             // Get our `next` url
-            console.log(resp);
             document.location.href = resp.url
         })
         .catch(errors => {

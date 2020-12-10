@@ -3,8 +3,9 @@ import React, { Component } from 'react'
 export default class TopNavbar extends Component {
     render() {
         return (
-            <nav class="navbar navbar-light bg-light">
-                <a class="navbar-brand" href="#">Business App</a>
+            <nav className="navbar navbar-light bg-light">
+                <span className="navbar-brand">Business App</span>
+                { this.props.access_token ? <button onClick={this.props.logoutHandler} className='btn btn-primary nav-item'>Logout</button> : ''}
             </nav>
         )
     }
