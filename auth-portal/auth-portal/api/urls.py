@@ -1,13 +1,15 @@
 from django.contrib import admin
 from django.urls import path
-from .views import UserList, UserDetail, ApplicationList, TokenRefresh
+
+from . import views
 
 admin.autodiscover()
 
-
 urlpatterns = [
-    path('users/', UserList.as_view()),
-    path('user_data/', UserDetail.as_view()),
-    path('applications/', ApplicationList.as_view()),
-    path('token/refresh/', TokenRefresh.as_view()),
+    path('authorize/<slug:client_id>', views.redirect_to_oauth_form, name="oauth_authorize"),
+    path('users/', views.UserList.as_view()),
+    path('user_data/', views.UserDetail.as_view()),
+    path('applications/', views.ApplicationList.as_view()),
+    path('token/refresh/', views.TokenRefresh.as_view()),
+    path('noexist/callback/', views.get_access_token, name='token'),
 ]

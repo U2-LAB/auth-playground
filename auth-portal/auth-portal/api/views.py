@@ -1,6 +1,4 @@
-from django.http import JsonResponse
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponseRedirect
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -58,14 +56,26 @@ class UserDetail(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         user_obj = self.get_object()
         scopes = self.request.auth.scopes
-        data = get_dump_data(request)
+        data = get_dump_data(request)  # TODO  Change on the data from first service
         response_data = {scope: data[scope] for scope in scopes}
         return JsonResponse(response_data)
 
 
+def redirect_to_oauth_form(request, client_id):
+    url = oauth_service.get_redirect_url(request, client_id)
+    return HttpResponseRedirect(url)
+
+
+def get_access_token(request):
+    # TODO Delete this function, need only for tests
+    """Returns the response with access token"""
+    response = oauth_service.request_to_get_access_token(request)
+    return JsonResponse(response.json())
+
+
 def get_dump_data(request):
     return ({
-        "Last_Name": "Kvarn",
-        "skype": "admin@gmail.com",
+        "First_Name": "Kvarn",
+        "Skype": "admin@gmail.com",
         "Phone": "+375441234567"
     })
