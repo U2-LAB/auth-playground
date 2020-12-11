@@ -87,6 +87,7 @@ def login_user(request):
                 "username": request.POST['username'],
                 "password": request.POST['password']
             }
+            next_url = request.POST.get('next', '')
 
             if not response["ErrorCode"]:
                 request.session["sessionAPI"] = response["SessionId"]
@@ -98,9 +99,8 @@ def login_user(request):
                     user.save()
 
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return HttpResponseRedirect(request.POST['next'])
+                return HttpResponseRedirect(next_url)
 
-            next_url = request.POST.get('next', '')
     else:
         form = UserForm()
 
@@ -111,4 +111,4 @@ def login_user(request):
 
 
 def go_home(request):
-    redirect(reverse('login'))
+    return redirect(reverse('login'))

@@ -8,8 +8,10 @@ from profiles.models import MyApplication
 from profiles.models import User
 from profiles.services import OauthServices
 from .serializers import ApplicationSerializer, UserSerializer
+from .services import DataService
 
 oauth_service = OauthServices()
+data_service = DataService()
 
 
 class TokenRefresh(APIView):
@@ -54,9 +56,8 @@ class UserDetail(generics.RetrieveAPIView):
         return self.request.auth.user
 
     def get(self, request, *args, **kwargs):
-        user_obj = self.get_object()
         scopes = self.request.auth.scopes
-        data = get_dump_data(request)  # TODO  Change on the data from first service
+        data = data_service.get_user_data(self.request)["Profile"]
         response_data = {scope: data[scope] for scope in scopes}
         return JsonResponse(response_data)
 
@@ -71,11 +72,3 @@ def get_access_token(request):
     """Returns the response with access token"""
     response = oauth_service.request_to_get_access_token(request)
     return JsonResponse(response.json())
-
-
-def get_dump_data(request):
-    return ({
-        "First_Name": "Kvarn",
-        "Skype": "admin@gmail.com",
-        "Phone": "+375441234567"
-    })
