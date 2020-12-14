@@ -4,6 +4,8 @@ import MainContent from './MainContent';
 import TopNavbar from './TopNavbar';
 import UserDataList from './UserDataList';
 
+import AUTH_PORTAL_HOST from '../config';
+
 
 class App extends Component {
   constructor(props) {
@@ -48,10 +50,10 @@ class App extends Component {
 
   getAccessToken(auth_code) {
     // Func that fetch data from auth-portal to get access_token
-    const URL = 'http://localhost:8000/oauth/token/'
+    const URL = `http://${AUTH_PORTAL_HOST}/oauth/token/`
     const headers = {
       "Cache-Control": "no-cache",
-      "Content-Type": "application/x-www-form-urlencoded"
+      "Content-Type": "application/x-www-form-urlencoded",
     }
 
     const data = {

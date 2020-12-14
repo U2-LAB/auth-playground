@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import AUTH_PORTAL_HOST from '../config';
 
 export default class UserDataList extends Component {
 
@@ -12,7 +12,7 @@ export default class UserDataList extends Component {
     
     componentWillMount() {
         // Func that fetch user data from auth-portal using access_token
-        const URL = 'http://localhost:8000/api/v1/user_data/'
+        const URL = `http://${AUTH_PORTAL_HOST}/api/v1/user_data/`
         
         fetch(URL, {
             headers: {
