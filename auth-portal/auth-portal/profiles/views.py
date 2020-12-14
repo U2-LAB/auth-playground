@@ -74,7 +74,6 @@ class UserDetailView(DetailView):
 def login_user(request):
     """Login user by session from service of truth"""
     next_url = request.GET.get('next', '')
-
     if request.method == "POST" and request.POST.get("logout"):
         logout(request)
         form = UserForm()

@@ -1,7 +1,9 @@
 from urllib.parse import urlencode
+from datetime import datetime
 
 import requests
-from django.http import JsonResponse
+
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 from oauth2_provider.models import Grant, RefreshToken
 from rest_framework import status
@@ -46,12 +48,11 @@ class OauthServices:
         try:
             app_obj = MyApplication.objects.get(client_id=client_id)
         except MyApplication.DoesNotExist:
-            return reverse("login")
+            return reverse("app_register")
         scopes = ' '.join(app_obj.scope.choices[elem] for elem in app_obj.scope)
 
         # TODO Implement opportunity to work with many redirect_uris
         redirect_uri = app_obj.redirect_uris.split()[0]
-
         url_args = {
             "response_type": "code",
             "client_id": client_id,
@@ -110,6 +111,18 @@ class OauthServices:
         return response_info
 
     def request_to_get_access_token(self, request):
+        if access_token := request.user.oauth2_provider_accesstoken.all().first():
+            tz = access_token.expires.tzinfo
+            expires_in = access_token.expires - datetime.now(tz)
+            data = {
+                "access_token": access_token.token,
+                "token_type": "Bearer",
+                "expires_in": int(expires_in.total_seconds()),
+                "refresh_token": request.user.oauth2_provider_refreshtoken.all().first().token,
+                "scope": access_token.scope,
+            }
+            return data
+
         authorization_code = request.GET['code']
         application_to_authorize = Grant.objects.get(code=authorization_code).application
         client_id = application_to_authorize.client_id
@@ -130,4 +143,4 @@ class OauthServices:
         }
 
         response = requests.post(url, headers=headers, data=data)
-        return response
+        return response.json()

@@ -70,5 +70,5 @@ def redirect_to_oauth_form(request, client_id):
 def get_access_token(request):
     # TODO Delete this function, need only for tests
     """Returns the response with access token"""
-    response = oauth_service.request_to_get_access_token(request)
-    return JsonResponse(response.json())
+    response_data = oauth_service.request_to_get_access_token(request)
+    return JsonResponse(response_data)
