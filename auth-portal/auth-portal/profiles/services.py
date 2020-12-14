@@ -1,9 +1,8 @@
-from urllib.parse import urlencode
 from datetime import datetime
+from urllib.parse import urlencode
 
 import requests
-
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.urls import reverse
 from oauth2_provider.models import Grant, RefreshToken
 from rest_framework import status

@@ -1,10 +1,11 @@
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from multiselectfield import MultiSelectField
 from oauth2_provider.models import AbstractApplication
 
 
 class User(AbstractUser):
-    pass
+    session_id_for_data_service = models.CharField(max_length=150, null=True, blank=True)
 
 
 class MyApplication(AbstractApplication):

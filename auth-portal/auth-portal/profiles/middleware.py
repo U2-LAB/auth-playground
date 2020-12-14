@@ -21,6 +21,8 @@ class CheckSessionMiddleware:
             expire_date = datetime.datetime.strptime(exp, "%Y-%m-%dT%H:%M:%S.%f")
             current_time = datetime.datetime.now()
             if expire_date - current_time < datetime.timedelta():
+                request.user.session_id_for_data_service = None
+                request.user.save()
                 logout(request)
                 return redirect("login")
         return response

@@ -89,15 +89,16 @@ def login_user(request):
             next_url = request.POST.get('next', '')
 
             if not response["ErrorCode"]:
-                request.session["sessionAPI"] = response["SessionId"]
                 request.session["expire_date_API"] = response["ExpireDate"]
                 user = authenticate(request, **user_credentials)
 
                 if not user:
                     user = User.objects.create_user(**user_credentials)
-                    user.save()
 
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                user.session_id_for_data_service = response["SessionId"]
+                user.save()
+
+                login(request, user)
                 return HttpResponseRedirect(next_url)
 
     else:

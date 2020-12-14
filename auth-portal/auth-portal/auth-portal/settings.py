@@ -47,7 +47,6 @@ INSTALLED_APPS = [
 
     'profiles.apps.UsersConfig',
     'api.apps.ApiConfig',
-    # 'frontend.apps.FrontendConfig',
 ]
 
 MIDDLEWARE = [

@@ -1,8 +1,8 @@
-from django.contrib.auth.models import Group
 from oauth2_provider.models import AccessToken
+from rest_framework import serializers
+
 from profiles.models import MyApplication
 from profiles.models import User
-from rest_framework import serializers
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
@@ -28,15 +28,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
         }
         return data
 
-    def get_field_names(self, *args, **kwargs):
-        field_names = super(ApplicationSerializer, self).get_field_names(*args, **kwargs)
-        return field_names
-
 
 class AccessTokenSerializer(serializers.ModelSerializer):
     application_name = serializers.SerializerMethodField()
     application_id = serializers.SerializerMethodField()
-
 
     def get_application_name(self, token):
         return token.application.name
