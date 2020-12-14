@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -71,7 +70,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-SESSION_COOKIE_AGE = 300
+SESSION_COOKIE_AGE = 36000
 
 ROOT_URLCONF = 'source_of_truth.urls'
 

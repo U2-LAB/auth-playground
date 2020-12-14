@@ -73,3 +73,6 @@ pythonenv*
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+source-of-truth/.flake8
+*.txt
+!requirements.txt

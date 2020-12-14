@@ -1,8 +1,7 @@
 import random
 
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-
+from django.core.management.base import BaseCommand
 from progress.bar import Bar
 
 
@@ -11,9 +10,9 @@ class Command(BaseCommand):
     USER_COUNT = 1000
 
     def _get_phone(self):
-        COUNT_NUMBER = 7
+        count_number = 7
         phone = '+37529'
-        for _ in range(COUNT_NUMBER):
+        for _ in range(count_number):
             phone = "".join([phone, str(random.randint(0, 9))])
         return phone
 
@@ -22,7 +21,6 @@ class Command(BaseCommand):
         parser.add_argument('last_name', nargs='?', type=str)
 
     def handle(self, *args, **options):
-        User = get_user_model()
         bar = Bar('Create user', max=self.USER_COUNT)
         with open(options['first_name'], 'r') as first_name_file, open(options['last_name'], 'r') as last_name_file:
 
@@ -36,18 +34,18 @@ class Command(BaseCommand):
             for _ in range(self.USER_COUNT):
                 first_name = first_name_file.readline().strip()
                 last_name = last_name_file.readline().strip()
-                email = "".join([first_name, "@mail.ru"])
+                email = first_name + "@mail.ru"
                 phone = self._get_phone()
                 skype = ".".join([first_name, last_name])
                 password = first_name
                 try:
-                    new_user = User.objects.create_user(
-                        username=first_name, 
-                        password=password, 
-                        email=email, 
-                        phone=phone, 
-                        skype=skype, 
-                        first_name=first_name, 
+                    new_user = get_user_model().objects.create_user(
+                        username=first_name,
+                        password=password,
+                        email=email,
+                        phone=phone,
+                        skype=skype,
+                        first_name=first_name,
                         last_name=last_name,
                     )
                     new_user.save()

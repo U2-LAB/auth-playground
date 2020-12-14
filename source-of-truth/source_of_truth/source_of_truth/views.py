@@ -1,5 +1,5 @@
+from django.contrib.auth import authenticate, get_user_model, login
 from django.shortcuts import render
-from django.contrib.auth import get_user_model, login, authenticate
 
 
 def home(request):
@@ -16,7 +16,6 @@ def home(request):
         else:
             context['error'] = 'Incorrect username or password'
     if not request.session.is_empty():
-        UserModel = get_user_model()
-        users = UserModel.objects.all()
+        users = get_user_model().objects.all()
         context['users'] = users
     return render(request, r'source_of_truth/index.html', context=context)

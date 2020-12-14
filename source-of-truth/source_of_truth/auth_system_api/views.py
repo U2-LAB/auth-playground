@@ -1,86 +1,84 @@
-from django.http.response import JsonResponse
-
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-
+from urllib.parse import parse_qs, urlparse
 
 from django.contrib.auth import authenticate, login, logout
+from django.http.response import JsonResponse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 from phonenumber_field.phonenumber import PhoneNumber
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from urllib.parse import urlparse, parse_qs
 
 from .models import User
 
 
 @api_view(['GET', 'POST'])
-def Auth(request):
-    SessionId = ''
-    ErrorCode = ''
-    Permission = 'READ'
-    ExpireDate = ''
+def auth(request):
+    session_id = ''
+    error_code = ''
+    permission = 'READ'
+    expire_date = ''
     try:
         logout(request)
     except Exception as e:
-        ErrorCode = f'Can\'t logout. Error {e}'
+        error_code = f'Can\'t logout. Error {e}'
     else:
         try:
             user = authenticate(username=request.data['username'], password=request.data['password'])
         except MultiValueDictKeyError:
-            ErrorCode = 'Error in Key name. Must be `username` and `password`'
+            error_code = 'Error in Key name. Must be `username` and `password`'
         else:
             if user is not None:
                 login(request, user)
-                SessionId = request.session.session_key
-                Permission = 'READ'
-                ExpireDate = request.session.get_expiry_date()
+                session_id = request.session.session_key
+                permission = 'READ'
+                expire_date = request.session.get_expiry_date()
             else:
-                SessionId = 0
-                ErrorCode = 'Incorrect user name or password'
+                session_id = 0
+                error_code = 'Incorrect user name or password'
     return JsonResponse(
         {
-            "SessionId": SessionId,
-            "ErrorCode": ErrorCode,
-            "Permission": Permission,
-            "ExpireDate": ExpireDate,
+            "SessionId": session_id,
+            "ErrorCode": error_code,
+            "Permission": permission,
+            "ExpireDate": expire_date,
         }
     )
 
 
-FIELDS = ['Email', 'Username', 'First_Name', 'Last_Name', 'Phone', 'Skype']
+USER_FIELDS = ['Email', 'Username', 'First_Name', 'Last_Name', 'Phone', 'Skype']
 
 
 @csrf_exempt
 @api_view(['GET'])
-def GetPerson(request):
-    ErrorCode = ''
-    Permission = 'READ'
-    Profile = {}
+def get_person(request):
+    error_code = ''
+    permission = 'READ'
+    profile = {}
     if not request.session.is_empty():
         url = parse_qs(urlparse(request.build_absolute_uri()).query)  # parse QueryString from url
         try:
-            personId_obj = url.get('personId', None)
-            if personId_obj:
-                personId = int(personId_obj[0])
+            person_id_obj = url.get('personId', None)
+            if person_id_obj:
+                person_id = int(person_id_obj[0])
             else:
-                personId = request.session['_auth_user_id']
+                person_id = request.session['_auth_user_id']
         except ValueError:
-            ErrorCode = "KeyError querystring must be contain `personId`",
+            error_code = "KeyError querystring must be contain `personId`",
         else:
             try:
-                user = User.objects.get(id=personId)
+                user = User.objects.get(id=person_id)
             except User.DoesNotExist:
-                ErrorCode = "User does not exist"
+                error_code = "User does not exist"
             else:
-                Profile = {field: _get_value(user, field.lower()) for field in FIELDS}
+                profile = {field: _get_value(user, field.lower()) for field in USER_FIELDS}
     else:
-        ErrorCode = "Session expired"
+        error_code = "Session expired"
     return JsonResponse(
         {
-            "ErrorCode": ErrorCode,
-            "Permission": Permission,
-            "Profile": Profile,
+            "ErrorCode": error_code,
+            "Permission": permission,
+            "Profile": profile,
         }
     )
 
@@ -94,20 +92,20 @@ def _get_value(user, field):
 
 
 @api_view(['GET'])
-def GetAllPerson(request):
-    ErrorCode = ''
-    Permission = 'READ'
-    Users = []
+def get_all_person(request):
+    error_code = ''
+    permission = 'READ'
+    users = []
     if not request.session.is_empty():
         for user in User.objects.all():
-            Users.append({field: _get_value(user, field.lower()) for field in FIELDS})
+            users.append({field: _get_value(user, field.lower()) for field in USER_FIELDS})
     else:
-        ErrorCode = "Session expired"
+        error_code = "Session expired"
     return Response(
         {
-            "ErrorCode": ErrorCode,
-            "Permission": Permission,
-            "Users": Users,
+            "ErrorCode": error_code,
+            "Permission": permission,
+            "Users": users,
         }
     )
 
