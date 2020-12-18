@@ -1,12 +1,13 @@
 import requests
+from django.conf import settings
 
 
 class DataService:
-    BASE_DATA_SERVICE_PATH = "http://192.168.32.89:8000"
+    base_data_service_path = settings.BASE_DATA_SERVICE_PATH
 
     def authorize_user_by_request(self, request):
         """Make request to get session from server service/"""
-        url = f"{self.BASE_DATA_SERVICE_PATH}/Auth"
+        url = f"{self.base_data_service_path}/Auth"
 
         credentials = {
             'username': request.POST["username"],
@@ -20,8 +21,9 @@ class DataService:
     def get_user_data(self, request):
         cookies = {**request.COOKIES, "sessionid": request.user.session_id_for_data_service}
         s = requests.Session()
-        url = f"{self.BASE_DATA_SERVICE_PATH}/GetPerson"
+        url = f"{self.base_data_service_path}/GetPerson"
         req = requests.Request("GET", url, cookies=cookies)
         req = s.prepare_request(req)
+        breakpoint()
         response = s.send(req)
         return response.json()

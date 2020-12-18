@@ -60,3 +60,9 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "oauth2_provider_accesstoken",
         )
+
+
+class UserCreationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "password")

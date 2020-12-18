@@ -1,3 +1,4 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse, HttpResponseRedirect
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from rest_framework import generics, permissions
@@ -7,7 +8,7 @@ from rest_framework.views import APIView
 from profiles.models import MyApplication
 from profiles.models import User
 from profiles.services import OauthServices
-from .serializers import ApplicationSerializer, UserSerializer
+from .serializers import ApplicationSerializer, UserSerializer, UserCreationSerializer
 from .services import DataService
 
 oauth_service = OauthServices()
@@ -35,14 +36,23 @@ class ApplicationList(generics.ListAPIView):
 
 
 class UserList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def post(self, request):
-        user = User.objects.create_user(username=request.POST['username'], password=request.POST['password'])
-        user.save()
-        data = {field: user.serializable_value(field) for field in UserSerializer.Meta.fields}
+        credentials = {
+            "username": request.POST["username"],
+            "password": request.POST["password"]
+        }
+        user = UserCreationSerializer(data=credentials)
+
+        if user.is_valid():
+            user = User.objects.create_user(credentials)
+            data = UserSerializer(user).data
+        else:
+            data = user._errors
+
         return Response(data)
 
 
