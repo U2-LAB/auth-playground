@@ -42,4 +42,6 @@ ___
 DJANGO_SECRET_KEY = <SECRET_KEY>
 USER_DB = <postgres_login>
 PASSWORD_DB = <postgres_password>
+OAUTH_PATH = <>
+BASE_DATA_SERVICE_PATH = <>
 ```

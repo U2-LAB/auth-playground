@@ -2,6 +2,7 @@ from datetime import datetime
 from urllib.parse import urlencode
 
 import requests
+from django.conf import settings
 from django.http import JsonResponse
 from django.urls import reverse
 from oauth2_provider.models import Grant, RefreshToken
@@ -11,7 +12,7 @@ from .models import MyApplication
 
 
 class OauthServices:
-    _OAUTH_PATH = 'http://192.168.32.95:8000/oauth'
+    oauth_path = settings.OAUTH_PATH
 
     def revoke_token(self, request, format=None):
         """
@@ -21,7 +22,7 @@ class OauthServices:
         app_id = request.POST["app_pk"]
         application_object = MyApplication.objects.get(pk=app_id)
 
-        url = f"{self._OAUTH_PATH}/revoke_token/"
+        url = f"{self.oauth_path}/revoke_token/"
         access_token = request.user.oauth2_provider_accesstoken.get(application_id=app_id).token
         headers = {
             "Content-Type": "application/x-www-form-urlencoded"
@@ -58,7 +59,7 @@ class OauthServices:
             "scope": scopes,
             "redirect_uri": redirect_uri
         }
-        return f'{self._OAUTH_PATH}/authorize/?{urlencode(url_args, safe="://")}'
+        return f'{self.oauth_path}/authorize/?{urlencode(url_args, safe="://")}'
 
     def request_to_refresh_access_token(self, request):
         client_id = request.POST.get("client_id", None)
@@ -90,7 +91,7 @@ class OauthServices:
             return error_info
 
         client_secret = app_obj.client_secret
-        url = f"{self._OAUTH_PATH}/token/"
+        url = f"{self.oauth_path}/token/"
         data = {
             "refresh_token": refresh_token,
             "client_id": client_id,
@@ -128,7 +129,7 @@ class OauthServices:
         client_secret = application_to_authorize.client_secret
         redirect_uri = request.build_absolute_uri().split('/?')[0]
 
-        url = f"{self._OAUTH_PATH}/token/"
+        url = f"{self.oauth_path}/token/"
         headers = {
             "Cache-Control": "no-cache",
             "Content-Type": "application/x-www-form-urlencoded"

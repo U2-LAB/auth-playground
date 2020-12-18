@@ -15,6 +15,12 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+
+OAUTH_PATH = os.getenv("OAUTH_PATH") if os.getenv("OAUTH_PATH") else "http://localhost:8000/oauth"
+BASE_DATA_SERVICE_PATH = os.getenv("BASE_DATA_SERVICE_PATH")\
+                         if os.getenv("BASE_DATA_SERVICE_PATH")\
+                         else "http://localhost:8000"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -163,6 +169,7 @@ AUTHENTICATION_BACKENDS = (
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ),
 
