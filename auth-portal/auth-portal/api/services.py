@@ -20,10 +20,6 @@ class DataService:
 
     def get_user_data(self, request):
         cookies = {**request.COOKIES, "sessionid": request.user.session_id_for_data_service}
-        s = requests.Session()
         url = f"{self.base_data_service_path}/GetPerson"
-        req = requests.Request("GET", url, cookies=cookies)
-        req = s.prepare_request(req)
-        breakpoint()
-        response = s.send(req)
+        response = requests.get(url, cookies=cookies)
         return response.json()
