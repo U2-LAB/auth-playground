@@ -5,7 +5,7 @@ import AUTH_PORTAL_HOST from '../config';
 export default class WelcomeJumbatron extends Component {
 
     handleClick = () => {
-        const URL = `http://${AUTH_PORTAL_HOST}/api/v1/authorize/` + this.props.client_id;
+        const URL = `http://${AUTH_PORTAL_HOST}/api/v1/authorize/` + this.props.clientId;
 
         fetch(URL, {
             method: 'GET'

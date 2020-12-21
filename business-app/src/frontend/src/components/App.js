@@ -10,15 +10,15 @@ import AUTH_PORTAL_HOST from '../config';
 class App extends Component {
   constructor(props) {
     super(props)
-    this.client_id = 'TWb3uMSJrHY9CwXqRDbFGzU1QufpBLGQ6BuCaPQM';
-    this.secret_key = 'AfD4CRm0SGcQJI4hxL1nfDcgPZhlONtXbgGoBu2ZHcnBOIsaYvKQ2Sbbi8UwuiamJmJ3GCpnm3tOgsGsDcYk2fnKmSljRlG1VWEogL7bY6EHLPHHgSccjQNvRd3upG4y';
-    this.redirect_uri = 'http://localhost:3000/';
-    
+    this.clientId = process.env.REACT_APP_CLIENT_ID;
+    this.secretKey = process.env.REACT_APP_SECRET_KEY;
+    this.redirectUri = process.env.REACT_APP_REDIRECT_URI;
+  
     this.timer = null;
 
     this.state = {
-      access_token: '',
-      refresh_token: '',
+      accessToken: '',
+      refreshToken: '',
       needRefresh: false,
       timeLeft: 0
     }
@@ -48,22 +48,13 @@ class App extends Component {
     return body
   }
 
-  getAccessToken(auth_code) {
-    // Func that fetch data from auth-portal to get access_token
-    const URL = `http://${AUTH_PORTAL_HOST}/oauth/token/`
+  fetchToken(URL, data) {
+    // custom fetch that will be used for getting accessToken or refreshToken.
     const headers = {
       "Cache-Control": "no-cache",
       "Content-Type": "application/x-www-form-urlencoded",
     }
 
-    const data = {
-      client_id: this.client_id,
-      client_secret: this.secret_key,
-      redirect_uri: this.redirect_uri,
-      code: auth_code,
-      grant_type: "authorization_code",
-    }
-    
     let body = this.formEncodedBody(data)
 
     fetch(URL, {
@@ -77,20 +68,45 @@ class App extends Component {
     .catch(errors => console.log(errors))
     .then(data => {
       this.setState({
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token,
         timeLeft: data.expires_in
       })
       this.startTimer()
     })
   }
 
-  getRefreshToken(){}
+  getAccessToken(authCode) {
+    // Func that fetch data from auth-portal to get access_token
+    const URL = `http://${AUTH_PORTAL_HOST}/oauth/token/`
+
+    const data = {
+      client_id: this.clientId,
+      client_secret: this.secretKey,
+      redirect_uri: this.redirectUri,
+      code: authCode,
+      grant_type: "authorization_code",
+    }
+    
+    this.fetchToken(URL, data)
+  }
+
+  getRefreshToken(){
+    const URL = `http://${AUTH_PORTAL_HOST}/api/v1/token/refresh`
+    
+    const data = {
+      token: this.accessToken,
+      client_id: this.clientId,
+      client_secret: this.secretKey
+    }
+    
+    this.fetchToken(URL, data)
+  }
 
   resetState() {
     this.setState({
-      access_token: '',
-      refresh_token: '',
+      accessToken: '',
+      refreshToken: '',
       needRefresh: false,
       timeLeft: 0
     })
@@ -119,6 +135,14 @@ class App extends Component {
     }, 1000)
   }
 
+  checkCurrentState() {
+    // Checks if there is the state in localstorage.
+    let prevState = localStorage.getItem('prevState') ? localStorage.getItem('prevState') : null
+
+    if (prevState)
+      this.setState({...JSON.parse(prevState)})
+  }
+
   componentDidUpdate() {
     // This func will store current state in the localstorage.
     // It is maden to track expired_in time for refresh token
@@ -126,24 +150,21 @@ class App extends Component {
   }
 
   componentWillMount() {
-    // This func will try to fetch the previous state from localstorage.
-    let prevState = localStorage.getItem('prevState') ? localStorage.getItem('prevState') : null 
-
-    if (prevState)
-      this.state = JSON.parse(prevState)
+    this.checkCurrentState()
   }
 
   componentDidMount() {
-    let auth_code = this.findGetParam('code')
 
-    if (this.state.access_token) {
+    let authCode = this.findGetParam('code')
+
+    if (this.state.accessToken) {
       if (this.state.needRefresh) {
-        //refresh
+        this.getRefreshToken()
       }
       this.startTimer()
     } else {
-      if (auth_code) {
-        this.getAccessToken(auth_code)
+      if (authCode) {
+        this.getAccessToken(authCode)
       }
     }
   }
@@ -151,8 +172,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <TopNavbar access_token={ this.state.access_token } logoutHandler={this.logout}/>
-        {this.state.access_token ? <UserDataList access_token={ this.state.access_token } /> : <MainContent client_id={ this.client_id }/>}
+        <TopNavbar accessToken={ this.state.accessToken } logoutHandler={this.logout}/>
+        {this.state.accessToken ? <UserDataList accessToken={ this.state.accessToken } /> : <MainContent clientId={ this.clientId }/>}
       </div>
     );
   }

@@ -5,7 +5,7 @@ export default class TopNavbar extends Component {
         return (
             <nav className="navbar navbar-light bg-light">
                 <span className="navbar-brand">Business App</span>
-                { this.props.access_token ? <button onClick={this.props.logoutHandler} className='btn btn-primary nav-item'>Logout</button> : ''}
+                { this.props.accessToken ? <button onClick={this.props.logoutHandler} className='btn btn-primary nav-item'>Logout</button> : ''}
             </nav>
         )
     }

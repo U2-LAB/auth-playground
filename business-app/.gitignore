@@ -242,3 +242,5 @@ pip-selfcheck.json
 .vscode
 # End of https://www.toptal.com/developers/gitignore/api/python,venv,django,react,vscode
 
+*.eslintcache
+package-lock.json
