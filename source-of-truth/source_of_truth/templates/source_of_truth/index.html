@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load image_tags %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,7 +23,7 @@
     {% for user in users %}
         <div class="card-block">
             <div class="card-info">
-                <img class="avatar" src="https://blog.mystart.com/wp-content/uploads/shutterstock_224423782-e1524166038524.jpg" alt="avatar" width="70px" height="70px"/>
+                <img class="avatar" src="{% get_gravatar_url user.email %}" alt="avatar" width="70px" height="70px"/>
                 <div class="card-name">
                     <h3>#{{user.id}}</h3>
                     <h3>{{ user.first_name }} {{ user.last_name }}</h3>
