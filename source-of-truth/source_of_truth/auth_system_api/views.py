@@ -38,10 +38,10 @@ def auth(request):
                 error_code = 'Incorrect user name or password'
     return JsonResponse(
         {
-            "SessionId": session_id,
-            "ErrorCode": error_code,
-            "Permission": permission,
-            "ExpireDate": expire_date,
+            "session_id": session_id,
+            "error_code": error_code,
+            "permission": permission,
+            "expire_date": expire_date,
         }
     )
 
@@ -76,9 +76,9 @@ def get_person(request):
         error_code = "Session expired"
     return JsonResponse(
         {
-            "ErrorCode": error_code,
-            "Permission": permission,
-            "Profile": profile,
+            "error_code": error_code,
+            "permission": permission,
+            "profile": profile,
         }
     )
 
@@ -103,9 +103,9 @@ def get_all_person(request):
         error_code = "Session expired"
     return Response(
         {
-            "ErrorCode": error_code,
-            "Permission": permission,
-            "Users": users,
+            "error_code": error_code,
+            "permission": permission,
+            "users": users,
         }
     )
 

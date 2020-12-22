@@ -68,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'auth_system_api.middleware.ResponseMiddleware',
 ]
 
 SESSION_COOKIE_AGE = 36000
