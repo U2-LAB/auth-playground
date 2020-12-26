@@ -1,27 +1,27 @@
-# TODO: добавить три приложения и базы данных к ним
-
 version: "3"
 services:
+  business-app:
+    container_name: auth-business-app
+    build: ./business-app
+    environment: 
+      DJANGO_SECRET_KEY: lksjauasujoiru0923842jrMKJF
+      DJANGO_DB_HOST: db
+      DJANGO_DB_NAME: business_app
+      DJANGO_DB_USER: business_app_admin
+      DJANGO_DB_PASSWORD: admin
+    ports: 
+      - 8000:8000
+    depends_on: 
+      - db
   db:
     image: postgres:latest
     container_name: auth-pg-db
     restart: always
+    environment: 
+      POSTGRES_PASSWORD: postgres
     ports:
       - 5432:5432
     volumes:
       - ./docker-db-init-scripts:/docker-entrypoint-initdb.d
       - ./pg_data:/var/lib/postgresql/data
-  business-app:
-    container_name: auth-business-app
-    restart: always
-    build: 
-      context: ./business-app
-    command: /bin/python3.9 manage.py runserver
-    environment: 
-     DJANGO_SECRET_KEY: lksjauasujoiru0923842jrMKJF
-     DJANGO_DB_HOST: db
-     DJANGO_DB_NAME: postgres
-     DJANGO_DB_USER: postgres
-     DJANGO_DB_PASSWORD: postgres
-    depends_on: 
-      - db
+  

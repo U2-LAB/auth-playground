@@ -5,7 +5,6 @@ RUN apt-get update -y && apt-get upgrade -y
 
 # Set docker args
 ARG TIMEZONE
-ARG DJANGO_SECRET_KEY
 
 # Set current timezone
 RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} > /etc/TIMEZONE
@@ -29,10 +28,18 @@ RUN curl -sL https://deb.nodesource.com/setup_lts.x && apt install -y nodejs npm
 RUN mkdir /usr/src/business-app
 COPY . /usr/src/business-app
 
-# WORKDIR /usr/src/business-app/src/frontend
-# RUN npm install -y
-# RUN npm run build
+# Build frontend
+WORKDIR /usr/src/business-app/src/frontend
+RUN npm install -y
+RUN npm run build
 
-WORKDIR /usr/src/business-app/src
-RUN /bin/python3.9 -m pip install -U pip
-RUN /bin/python3.9 -m pip install -r ../requirements.txt
+# Update pip and install requirements
+WORKDIR /usr/src/business-app/
+RUN /bin/python3 -m pip install -U pip
+RUN /bin/python3 -m pip install -r requirements.txt
+
+# Give executed permission to entrypoint script
+RUN chmod +x ./docker-entrypoint.sh
+
+# Run app
+CMD [ "./docker-entrypoint.sh", "0.0.0.0", "8000"]
