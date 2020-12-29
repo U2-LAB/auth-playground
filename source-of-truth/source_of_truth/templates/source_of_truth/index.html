@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% load static %}
+{% load image_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "source_of_truth/css/style.css" %}">
+    <title>Source of truth</title>
+</head>
+<body>
+{% if user.is_authenticated %}
+    <header id="header">
+        <div id="logo-box">
+        <h1 id="logotype">Source of truth</h1>
+        </div>
+        <div id="logout-box">
+            <input type="button" value="Logout" onclick="fetch('/logout').then(() => document.location.href='/home')" id="logout_btn"/>
+        </div>
+    </header>
+    <h1 id="list_header">List of Users</h1>
+    <div class='grid-container'>
+    {% for user in users %}
+        <div class="card-block">
+            <div class="card-info">
+                <img class="avatar" src="{% get_gravatar_url user.email %}" alt="avatar" width="70px" height="70px"/>
+                <div class="card-name">
+                    <h3>#{{user.id}}</h3>
+                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                </div>
+            </div>
+            <div class="card-data">
+            {% if user.email %}<h4>Email: <a href='mailto:{{user.email}}'>{{user.email}}</a></h4>{% endif %}
+            {% if user.skype %}<h4>Skype: {{user.skype}}</h4>{% endif %}
+            {% if user.phone %}<h4>Phone: <a href='tel: {{user.phone}}'>{{user.phone}}</a></h4>{% endif %}
+            {% if user.username %}<h4>Login: {{user.username}}</h4>{% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <form method="post">
+        {% csrf_token %}
+        <p id="error">{{ error }}</p>
+        <div class='field login'>
+            <input type="text" name="login" id="login" required/>
+            <label for="login">Login</label>
+        </div>    
+        <div class='field password'>
+            <input type="password" name="password" id="password" required/>
+            <label for="password">Password</label>
+        </div>
+            <input type="submit" value="Submit" />  
+    </form>
+{% endif %}
+</body>
+</html>
