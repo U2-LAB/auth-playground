@@ -17,6 +17,10 @@ media
 # C extensions
 *.so
 
+# json and csv files
+*.csv
+*.json
+
 # Distribution / packaging
 .Python
 build/
@@ -36,19 +40,29 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.idea/
 MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
 
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
 
 
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
 
 
 # Environments
