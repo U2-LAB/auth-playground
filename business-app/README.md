@@ -1,4 +1,4 @@
-# auth-playground
+# Auth-portal
 
 ## Buisness app
 Simple business app that will use OAuth system.
