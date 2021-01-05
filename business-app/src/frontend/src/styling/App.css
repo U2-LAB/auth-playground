@@ -1,0 +1,11 @@
+.main-content {
+    text-align: center;
+}
+
+.login-btn, .signup-btn {
+    display: block;
+    margin: 5px auto;
+    padding: 25px;
+    width: 30%;
+    font-size: 24px;
+}
