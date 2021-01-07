@@ -7,6 +7,8 @@ export default class WelcomeJumbatron extends Component {
     handleClick = () => {
         const URL = `http://${AUTH_PORTAL_HOST}/api/v1/authorize/` + this.props.clientId;
 
+        console.log(AUTH_PORTAL_HOST)
+
         fetch(URL, {
             method: 'GET'
         })
