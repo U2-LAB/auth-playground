@@ -24,7 +24,7 @@ services:
       DJANGO_DB_PASSWORD: admin
       DJANGO_DB_HOST: db
       OAUTH_PATH: https://0.0.0.0:7000/oauth
-      BASE_DATA_SERVICE_PATH: https://0.0.0.0:7000
+      BASE_DATA_SERVICE_PATH: https://0.0.0.0:9000
     ports:
       - 7000:7000
     depends_on: 
