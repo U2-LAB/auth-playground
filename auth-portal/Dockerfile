@@ -25,14 +25,6 @@ RUN apt-get install -y python3.9
 RUN mkdir /usr/src/auth-portal
 COPY . /usr/src/auth-portal
 
-ENV SECRET_KEY=ksdjflaklsdjfkajsdlkflajkl
-ENV DJANGO_DB_NAME=auth_portal
-ENV DJANGO_DB_USER=auth_portal_admin
-ENV DJANGO_DB_PASSWORD=admin
-ENV DJANGO_DB_HOST=db
-ENV OAUTH_PATH=https://0.0.0.0:7000/oauth
-ENV BASE_DATA_SERVICE_PATH=https://0.0.0.0:7000
-
 # Update pip and install requirements
 WORKDIR /usr/src/auth-portal/
 RUN /bin/python3 -m pip install -U pip
