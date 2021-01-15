@@ -1,20 +1,49 @@
 version: "3"
 services:
   business-app:
-    container_name: auth-business-app
+    container_name: auth-playground_business-app
     build: ./business-app
     environment: 
       DJANGO_SECRET_KEY: lksjauasujoiru0923842jrMKJF
-      DJANGO_DB_HOST: db
       DJANGO_DB_NAME: business_app
       DJANGO_DB_USER: business_app_admin
       DJANGO_DB_PASSWORD: admin
+      DJANGO_DB_HOST: db
+      OAUTH_PROVIDER_PATH: 0.0.0.0:7000
     ports: 
       - 8000:8000
     depends_on: 
+      - auth-portal
+  auth-portal:
+    container_name: auth-playground_auth-portal
+    build: ./auth-portal
+    environment: 
+      SECRET_KEY: ksdjflaklsdjfkajsdlkflajkl
+      DJANGO_DB_NAME: auth_portal
+      DJANGO_DB_USER: auth_portal_admin
+      DJANGO_DB_PASSWORD: admin
+      DJANGO_DB_HOST: db
+      OAUTH_PATH: https://0.0.0.0:7000/oauth
+      BASE_DATA_SERVICE_PATH: https://0.0.0.0:9000
+    ports:
+      - 7000:7000
+    depends_on: 
+      - source-of-truth
+  source-of-truth:
+    container_name: auth-playground_source-of-truth
+    build: ./source-of-truth
+    environment: 
+      DJANGO_SECRET_KEY: falskdjflasjdflkjasdjfkj
+      DJANGO_DB_NAME: source_of_truth
+      DJANGO_DB_USER: source_of_truth_admin
+      DJANGO_DB_PASSWORD: admin
+      DJANGO_DB_HOST: db
+    ports: 
+      - 9000:9000
+    depends_on: 
       - db
   db:
-    image: postgres:latest
+    image: postgres:alpine
     container_name: auth-pg-db
     restart: always
     environment: 
@@ -24,4 +53,3 @@ services:
     volumes:
       - ./docker-db-init-scripts:/docker-entrypoint-initdb.d
       - ./pg_data:/var/lib/postgresql/data
-  

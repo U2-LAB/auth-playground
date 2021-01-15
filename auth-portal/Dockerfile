@@ -21,20 +21,12 @@ RUN apt-get install -y \
 # Install python
 RUN apt-get install -y python3.9
 
-# INSTALLING NODE
-RUN curl -sL https://deb.nodesource.com/setup_lts.x && apt install -y nodejs npm
-
 # Setup project
-RUN mkdir /usr/src/business-app
-COPY . /usr/src/business-app
-
-# Build frontend
-WORKDIR /usr/src/business-app/src/frontend
-RUN npm install -y
-RUN npm run build
+RUN mkdir /usr/src/auth-portal
+COPY . /usr/src/auth-portal
 
 # Update pip and install requirements
-WORKDIR /usr/src/business-app/
+WORKDIR /usr/src/auth-portal/
 RUN /bin/python3 -m pip install -U pip
 RUN /bin/python3 -m pip install -r requirements.txt
 
@@ -42,4 +34,4 @@ RUN /bin/python3 -m pip install -r requirements.txt
 RUN chmod +x ./docker-entrypoint.sh
 
 # Run app
-CMD [ "./docker-entrypoint.sh", "0.0.0.0", "8000"]
+CMD [ "./docker-entrypoint.sh", "0.0.0.0", "7000"]

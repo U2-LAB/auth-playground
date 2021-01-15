@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'auth_system_api.User'
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,11 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'phonenumber_field',  # Field to save phone number from user
     'auth_system_api',
+    'phonenumber_field',  # Field to save phone number from user
     'rest_framework',
+    'corsheaders',
     'multiselectfield',
-    'corsheaders'
 ]
 
 REST_FRAMEWORK = {
@@ -102,11 +103,11 @@ WSGI_APPLICATION = 'source_of_truth.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_db',
-        'USER': 'mikita',
-        'PASSWORD': 'mikita',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.getenv("DJANGO_DB_NAME"),
+        'USER': os.getenv("DJANGO_DB_USER"),
+        'PASSWORD': os.getenv("DJANGO_DB_PASSWORD"),
+        'HOST': os.getenv("DJANGO_DB_HOST"),
+        'PORT': 5432,
     }
 }
 
